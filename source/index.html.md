@@ -26,7 +26,8 @@ Welcome to the bitexbit API docs!
 Service [bitexbit.com](https://www.bitexbit.com) provides open API for trading operations and broadcasting of all trading events. 
 
 
-# HTTP API
+
+# HTTP API Gateway
 
 
 HTTP API endpoint available on [https://www.bitexbit.com/api/gateway](https://www.bitexbit.com/api/gateway/).
@@ -98,6 +99,13 @@ All request to these methods must contain the following headers:
 * X-SIGN - query's POST data, sorted by keys and signed by your key's "secret" according to the HMAC-SHA256 method.
 * X-NONCE - integer value, must be greater then nonce in previous api call.
 
+# HTTP API (v1)
+
+Read more about API v1 [here](https://bitexbit.github.io/api-docs-v1)
+
+# HTTP API (v2)
+
+Read more about API v2 [here](https://bitexbit.github.io/api-docs-v2)
 
 # Errors
 
