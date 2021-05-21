@@ -311,12 +311,18 @@
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
           </li>
           <li>
-            <a href="#http-api" class="toc-h1 toc-link" data-title="HTTP API">HTTP API</a>
+            <a href="#http-api-gateway" class="toc-h1 toc-link" data-title="HTTP API Gateway">HTTP API Gateway</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#authorization" class="toc-h2 toc-link" data-title="Authorization">Authorization</a>
                   </li>
               </ul>
+          </li>
+          <li>
+            <a href="#http-api-v1" class="toc-h1 toc-link" data-title="HTTP API (v1)">HTTP API (v1)</a>
+          </li>
+          <li>
+            <a href="#http-api-v2" class="toc-h1 toc-link" data-title="HTTP API (v2)">HTTP API (v2)</a>
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
@@ -381,7 +387,7 @@
 <p>Welcome to the bitexbit API docs!</p>
 
 <p>Service <a href="https://www.bitexbit.com">bitexbit.com</a> provides open API for trading operations and broadcasting of all trading events. </p>
-<h1 id='http-api'>HTTP API</h1>
+<h1 id='http-api-gateway'>HTTP API Gateway</h1>
 <p>HTTP API endpoint available on <a href="https://www.bitexbit.com/api/gateway/">https://www.bitexbit.com/api/gateway</a>.</p>
 
 <p>Some methods requires authorization <a href="#authorization">read below</a>.</p>
@@ -446,6 +452,10 @@ We have limit in 2 calls per second from single account to authorization require
 <li>X-SIGN - query&#39;s POST data, sorted by keys and signed by your key&#39;s &quot;secret&quot; according to the HMAC-SHA256 method.</li>
 <li>X-NONCE - integer value, must be greater then nonce in previous api call.</li>
 </ul>
+<h1 id='http-api-v1'>HTTP API (v1)</h1>
+<p>Read more about API v1 <a href="https://bitexbit.github.io/api-docs-v1">here</a></p>
+<h1 id='http-api-v2'>HTTP API (v2)</h1>
+<p>Read more about API v2 <a href="https://bitexbit.github.io/api-docs-v2">here</a></p>
 <h1 id='errors'>Errors</h1>
 <p>We are using standard HTTP statuses in responses.</p>
 
