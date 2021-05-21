@@ -1,0 +1,1175 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Docs Gateway | bitextbit</title>
+    <link href="images/favicon-1bcb9093.ico" rel="icon" type="image/ico" />
+
+    <style media="screen">
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s, .highlight .sa, .highlight .dl {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf, .highlight .fm {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv, .highlight .vm {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #f92672;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <style media="print">
+      * {
+        -webkit-transition:none!important;
+        transition:none!important;
+      }
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: #586e75;
+}
+.highlight .err {
+  color: #002b36;
+  background-color: #dc322f;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cpf, .highlight .c1, .highlight .cs {
+  color: #657b83;
+}
+.highlight .cp {
+  color: #b58900;
+}
+.highlight .nt {
+  color: #b58900;
+}
+.highlight .o, .highlight .ow {
+  color: #93a1a1;
+}
+.highlight .p, .highlight .pi {
+  color: #93a1a1;
+}
+.highlight .gi {
+  color: #859900;
+}
+.highlight .gd {
+  color: #dc322f;
+}
+.highlight .gh {
+  color: #268bd2;
+  background-color: #002b36;
+  font-weight: bold;
+}
+.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+  color: #6c71c4;
+}
+.highlight .kc {
+  color: #cb4b16;
+}
+.highlight .kt {
+  color: #cb4b16;
+}
+.highlight .kd {
+  color: #cb4b16;
+}
+.highlight .s, .highlight .sa, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+  color: #859900;
+}
+.highlight .sr {
+  color: #2aa198;
+}
+.highlight .si {
+  color: #d33682;
+}
+.highlight .se {
+  color: #d33682;
+}
+.highlight .nn {
+  color: #b58900;
+}
+.highlight .nc {
+  color: #b58900;
+}
+.highlight .no {
+  color: #b58900;
+}
+.highlight .na {
+  color: #268bd2;
+}
+.highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+  color: #859900;
+}
+.highlight .ss {
+  color: #859900;
+}
+    </style>
+    <link href="stylesheets/screen-3912f8c1.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print-953e3353.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all-e033bdd3.js"></script>
+
+    <script>
+      $(function() { setupCodeCopy(); });
+    </script>
+  </head>
+
+  <body class="index" data-languages="[&quot;python&quot;,&quot;javascript&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar-cad8cdcb.png" alt="" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <img src="images/logo-1fb6a9d8.png" class="logo" alt="" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="python">Python</a>
+              <a href="#" data-language-name="javascript">Node.js</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <ul id="toc" class="toc-list-h1">
+          <li>
+            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#http-api" class="toc-h1 toc-link" data-title="HTTP API">HTTP API</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#authorization" class="toc-h2 toc-link" data-title="Authorization">Authorization</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+          </li>
+          <li>
+            <a href="#payment-methods" class="toc-h1 toc-link" data-title="Payment Methods">Payment Methods</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#methods" class="toc-h2 toc-link" data-title="Methods">Methods</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#wallets" class="toc-h1 toc-link" data-title="Wallets">Wallets</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#wallet-create" class="toc-h2 toc-link" data-title="Wallet Create">Wallet Create</a>
+                  </li>
+                  <li>
+                    <a href="#wallets-list" class="toc-h2 toc-link" data-title="Wallets List">Wallets List</a>
+                  </li>
+                  <li>
+                    <a href="#wallet-history" class="toc-h2 toc-link" data-title="Wallet History">Wallet History</a>
+                  </li>
+                  <li>
+                    <a href="#deposit-statuses" class="toc-h2 toc-link" data-title="Deposit Statuses">Deposit Statuses</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#withdraw" class="toc-h1 toc-link" data-title="Withdraw">Withdraw</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#withdraw-create" class="toc-h2 toc-link" data-title="Withdraw Create">Withdraw Create</a>
+                  </li>
+                  <li>
+                    <a href="#withdraw-history" class="toc-h2 toc-link" data-title="Withdraw History">Withdraw History</a>
+                  </li>
+                  <li>
+                    <a href="#withdraw-statuses" class="toc-h2 toc-link" data-title="Withdraw Statuses">Withdraw Statuses</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#aml" class="toc-h1 toc-link" data-title="AML">AML</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#check-aml" class="toc-h2 toc-link" data-title="Check AML">Check AML</a>
+                  </li>
+              </ul>
+          </li>
+      </ul>
+        <ul class="toc-footer">
+            <li><a href='https://www.bitexbit.com/auth/login'>Sign Up for a Developer Key</a></li>
+            <li><a href='https://github.com/lord/slate'>Documentation Powered by Slate</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='introduction'>Introduction</h1>
+<p>Welcome to the bitexbit API docs!</p>
+
+<p>Service <a href="https://www.bitexbit.com">bitexbit.com</a> provides open API for trading operations and broadcasting of all trading events. </p>
+<h1 id='http-api'>HTTP API</h1>
+<p>HTTP API endpoint available on <a href="https://www.bitexbit.com/api/gateway/">https://www.bitexbit.com/api/gateway</a>.</p>
+
+<p>Some methods requires authorization <a href="#authorization">read below</a>.</p>
+
+<aside class="success">
+We have limit in 2 calls per second from single account to authorization required methods and 100 calls per secong from single IP address to public methods.
+</aside>
+
+<p>All HTTP methods accept <code>JSON</code> formats of requests and responses if it not specified by headers.  </p>
+<h2 id='authorization'>Authorization</h2>
+<blockquote>
+<p>To generate auth headers, use this code:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">hmac</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlencode</span>
+
+<span class="k">def</span> <span class="nf">get_auth_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{}):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">'your key'</span> <span class="o">+</span> <span class="n">urlencode</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">sign</span> <span class="o">=</span> <span class="n">hmac</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'your keys secret'</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">msg</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">digestmod</span><span class="o">=</span><span class="s">'sha256'</span><span class="p">).</span><span class="n">hexdigest</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">'X-KEY'</span><span class="p">:</span> <span class="s">'your key'</span><span class="p">,</span>
+            <span class="s">'X-SIGN'</span><span class="p">:</span> <span class="n">sign</span><span class="p">,</span>
+            <span class="s">'X-NONCE'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)),</span>
+        <span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">hmacSha256</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">crypto-js/hmac-sha256</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// sha256 hash. or use you favorite u like</span>
+<span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// for http requests. or use you favorite u like</span>
+
+<span class="kd">const</span> <span class="nx">BASE_URL</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/api/v1</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">API_KEY</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0000-0000...</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">SECRET</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Z%2........</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">//Serialize for singing only. Can be used in request body if u like urlencoded form format instead of json</span>
+<span class="kd">function</span> <span class="nx">serializePayload</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Object</span>
+    <span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="c1">// get keys of payload object</span>
+    <span class="p">.</span><span class="nx">sort</span><span class="p">()</span> <span class="c1">// sort keys</span>
+    <span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">key</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">key</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">=</span><span class="dl">"</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">payload</span><span class="p">[</span><span class="nx">key</span><span class="p">]))</span> <span class="c1">// each value should be url encoded. the most sensitive part for sign checking</span>
+    <span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="dl">'</span><span class="s1">&amp;</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// to sting, separate with ampersand</span>
+<span class="p">}</span>
+
+<span class="c1">// Generates auth headers</span>
+<span class="kd">function</span> <span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">payload</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+  <span class="c1">// get SHA256 of &lt;API_KEY&gt;&lt;sorted urlencoded payload string&gt;&lt;SECRET&gt;</span>
+  <span class="kd">const</span> <span class="nx">sign</span> <span class="o">=</span> <span class="nx">hmacSha256</span><span class="p">(</span><span class="nx">API_KEY</span> <span class="o">+</span> <span class="nx">serializePayload</span><span class="p">(</span><span class="nx">payload</span><span class="p">),</span> <span class="nx">SECRET</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="dl">'</span><span class="s1">X-KEY</span><span class="dl">'</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">X-SIGN</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sign</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">X-NONCE</span><span class="dl">'</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In order for access to private API methods, generate authorization keys <a href="https://www.bitexbit.com/profile/api">in profile settings</a>.</p>
+
+<p>All request to these methods must contain the following headers:</p>
+
+<ul>
+<li>X-KEY - your key.</li>
+<li>X-SIGN - query&#39;s POST data, sorted by keys and signed by your key&#39;s &quot;secret&quot; according to the HMAC-SHA256 method.</li>
+<li>X-NONCE - integer value, must be greater then nonce in previous api call.</li>
+</ul>
+<h1 id='errors'>Errors</h1>
+<p>We are using standard HTTP statuses in responses.</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>400</td>
+<td>If response has http status 400 that means that client should change some input parameters to make it success. What exactly wrong returned in response body.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>In case when HTTP endpoint require authentication but provided authentication headers not valid - response with status 401 will be returned and the details in body.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>You do not have access to do the operation. For example when you try to cancel orders that was created by other user.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>We have different rate limits to call API methods. If you reached this - response with status 429 will be returned.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Nobody is safe to make mistakes. This is the case when error happened on serer side. No details but we are see it.</td>
+</tr>
+<tr>
+<td>502</td>
+<td>Looks like we under high load. Try your request later.</td>
+</tr>
+</tbody></table>
+<h1 id='payment-methods'>Payment Methods</h1><h2 id='methods'>Methods</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="s">'https://www.bitexbit.com/api/gateway​/payment-methods'</span><span class="p">,</span>
+                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">({})</span>
+                        <span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/payment-methods</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span> <span class="nx">getAuthHeaders</span><span class="p">()</span>
+            <span class="p">},</span> 
+            <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BTC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bitcoin"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_deposit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00100000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_withdraw"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00060000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_withdraw"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00040000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BTC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"is_deposit_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"is_withdraw_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_deposit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.50000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_withdraw"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_withdraw"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50000.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00000000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"withdraw_fee_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"is_deposit_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"is_withdraw_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request'>HTTP Request</h3>
+<p><code>GET https://www.bitexbit.com/api/gateway​/payment-methods</code></p>
+
+<p>Returns information about all available payment methods.</p>
+<h3 id='query-parameters'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ordering</td>
+<td>default</td>
+<td>Ordering parameter. <code>id</code> - ascending sorting, <code>-id</code> - descending sorting</td>
+</tr>
+</tbody></table>
+<h1 id='wallets'>Wallets</h1><h2 id='wallet-create'>Wallet Create</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">body</span> <span class="o">=</span>  <span class="p">{</span>
+  <span class="s">"ticker"</span><span class="p">:</span> <span class="s">"ETH"</span><span class="p">,</span>
+  <span class="s">"network"</span><span class="p">:</span> <span class="s">"ethereum"</span><span class="p">,</span>
+  <span class="s">"convert_ticker"</span><span class="p">:</span> <span class="s">"USDT"</span><span class="p">,</span>
+  <span class="s">"convert_limit"</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+  <span class="s">"convert_percent"</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/wallet​/create'</span><span class="p">,</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">body</span><span class="p">,</span> 
+                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+                        <span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">body</span> <span class="o">=</span>  <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ETH</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">network</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ethereum</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">convert_ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">USDT</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">convert_limit</span><span class="dl">"</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">convert_percent</span><span class="dl">"</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallet​/create</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">form</span><span class="p">:</span><span class="nx">body</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+              <span class="p">},</span> 
+              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0x35f03647b25bd3e3221608dc05f079c0ce3ba3b1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"659b46e76ae05ce03b19ec39f64dbea6f29e"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ETH"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ethereum"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"convert_ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"convert_limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000.00000000"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"convert_percent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.00000000"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-21T12:10:54.552073Z"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request-2'>HTTP Request</h3>
+<p><code>POST https://www.bitexbit.com/api/gateway​/wallet/create</code></p>
+
+<p>Returns information about created wallets.</p>
+<h3 id='post-params'>POST Params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ticker</td>
+<td></td>
+<td><code>true</code></td>
+<td>Ticker.</td>
+</tr>
+<tr>
+<td>network</td>
+<td></td>
+<td><code>true</code></td>
+<td>Ticker network .</td>
+</tr>
+<tr>
+<td>callback_url</td>
+<td></td>
+<td><code>false</code></td>
+<td>Callback url.</td>
+</tr>
+<tr>
+<td>convert_ticker</td>
+<td></td>
+<td><code>false</code></td>
+<td>Will create order convert_ticker/ticker OR ticker/convert_ticker. If pair doesn&#39;t exist will return error.</td>
+</tr>
+<tr>
+<td>convert_limit</td>
+<td></td>
+<td><code>false</code></td>
+<td>Order max amount. If deposit 100 and convert_limit = 20. Order amount set to 20.</td>
+</tr>
+<tr>
+<td>convert_percent</td>
+<td>5</td>
+<td><code>false</code></td>
+<td>Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative</td>
+</tr>
+</tbody></table>
+<h2 id='wallets-list'>Wallets List</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/wallets'</span><span class="p">,</span><span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">({}))</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallets</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span> <span class="nx">getAuthHeaders</span><span class="p">()</span>
+            <span class="p">},</span> 
+            <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"next"</span><span class="p">:</span><span class="s2">" https://www.bitexbit.com/api/gateway/wallets?page=2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"previous"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"results"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"529e67dd83f210e727702d15ffbde9548917"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ETH"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"30.00000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_percent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.10000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-20T14:42:15.210193Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TKpR2mrEj2Stnm4QLNMf97zWvgmSGvuLMU"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fd00bbe3f2b24da40b62cf6675f03f656e3a"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_ticker"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_limit"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"convert_percent"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-20T14:06:35.498294Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request-3'>HTTP Request</h3>
+<p><code>GET https://www.bitexbit.com/api/gateway​/wallets</code></p>
+
+<p>Returns information about all created wallets.</p>
+<h3 id='query-parameters-2'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td>1</td>
+<td>A page number within the paginated result set.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>all</td>
+<td>Limiting results.</td>
+</tr>
+<tr>
+<td>ordering</td>
+<td>default</td>
+<td>Ordering parameter. <code>id</code> - ascending sorting, <code>-id</code> - descending sorting</td>
+</tr>
+</tbody></table>
+<h2 id='wallet-history'>Wallet History</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/wallet​/history'</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallet​/history</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+              <span class="p">},</span> 
+              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"next"</span><span class="p">:</span><span class="s2">" https://www.bitexbit.com/api/gateway/wallet/history?page=2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"previous"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"results"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"wallet_slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"529e67dd83f210e727702d15ffbde9548917"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-20T14:56:10.196967Z"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.00000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"fee"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b104deee6cdbd07e4d97f16b88ec21014059d5837e2428a7f0d48e58e80d5d81"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"actual_confirmations"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"required_confirmations"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_risk"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-20T14:56:10.196967Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request-4'>HTTP Request</h3>
+<p><code>GET https://www.bitexbit.com/api/gateway​/wallet/history</code></p>
+
+<p>Returns information about all wallets deposits.</p>
+<h3 id='query-parameters-3'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ticker</td>
+<td>Ticker.</td>
+</tr>
+<tr>
+<td>network</td>
+<td>Ticker network .</td>
+</tr>
+<tr>
+<td>page</td>
+<td>A page number within the paginated result set.</td>
+</tr>
+<tr>
+<td>status</td>
+<td></td>
+</tr>
+<tr>
+<td>txid</td>
+<td></td>
+</tr>
+<tr>
+<td>address</td>
+<td></td>
+</tr>
+<tr>
+<td>payment_id</td>
+<td></td>
+</tr>
+<tr>
+<td>memo</td>
+<td></td>
+</tr>
+<tr>
+<td>destination_tag</td>
+<td></td>
+</tr>
+<tr>
+<td>ordering</td>
+<td>Which field to use when ordering the results.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>Limiting results.</td>
+</tr>
+</tbody></table>
+<h2 id='deposit-statuses'>Deposit Statuses</h2>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>PENDING</td>
+<td>when waiting for confirmation</td>
+</tr>
+<tr>
+<td>5</td>
+<td>CONFIRMED</td>
+<td>when on balance</td>
+</tr>
+<tr>
+<td>6</td>
+<td>REJECTED</td>
+<td>when impossible to approve</td>
+</tr>
+</tbody></table>
+<h1 id='withdraw'>Withdraw</h1><h2 id='withdraw-create'>Withdraw Create</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">body</span> <span class="o">=</span>  <span class="p">{</span>
+  <span class="s">"ticker"</span><span class="p">:</span> <span class="s">"USDT"</span><span class="p">,</span>
+  <span class="s">"network"</span><span class="p">:</span> <span class="s">"tron"</span><span class="p">,</span>
+  <span class="s">"address"</span><span class="p">:</span> <span class="s">"TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW"</span><span class="p">,</span>
+  <span class="s">"payment_id"</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span>
+  <span class="s">"memo"</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span>
+  <span class="s">"comment"</span><span class="p">:</span> <span class="s">"Call after success"</span><span class="p">,</span>
+  <span class="s">"destination_tag"</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span>
+  <span class="s">"amount"</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+  <span class="s">"client_order_id"</span><span class="p">:</span> <span class="s">"order_123"</span><span class="p">,</span>
+  <span class="s">"fee_payer"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s">"auto_buy_ticker"</span><span class="p">:</span> <span class="s">"ETH"</span><span class="p">,</span>
+  <span class="s">"auto_buy_percent"</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/withdraw/create'</span><span class="p">,</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">body</span><span class="p">,</span> 
+                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+                        <span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">body</span> <span class="o">=</span>  <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">USDT</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">network</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">tron</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">address</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">payment_id</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">memo</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">comment</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Call after success</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">destination_tag</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">amount</span><span class="dl">"</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">client_order_id</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">order_123</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">fee_payer</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">auto_buy_ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ETH</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">auto_buy_percent</span><span class="dl">"</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">}</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/withdraw/create</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">form</span><span class="p">:</span><span class="nx">body</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+              <span class="p">},</span> 
+              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"memo"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Call after success"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"destination_tag"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"client_order_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order_123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"fee_payer"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"auto_buy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"symbol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ETH"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">3300</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"aml_success"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"aml_risk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"aml_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-21T13:28:32.095Z"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request-5'>HTTP Request</h3>
+<p><code>POST https://www.bitexbit.com/api/gateway​/withdraw/create</code></p>
+
+<p>Returns information about created withdraw.</p>
+<h3 id='post-params-2'>POST Params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ticker</td>
+<td></td>
+<td><code>true</code></td>
+<td>Ticker.</td>
+</tr>
+<tr>
+<td>network</td>
+<td></td>
+<td><code>true</code></td>
+<td>Ticker network .</td>
+</tr>
+<tr>
+<td>address</td>
+<td></td>
+<td><code>true</code></td>
+<td>Address to withdraw.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td></td>
+<td><code>true</code></td>
+<td>Amount to withdraw.</td>
+</tr>
+<tr>
+<td>callback_url</td>
+<td></td>
+<td><code>false</code></td>
+<td>Callback url.</td>
+</tr>
+<tr>
+<td>comment</td>
+<td></td>
+<td><code>false</code></td>
+<td>Comment.</td>
+</tr>
+<tr>
+<td>client_order_id</td>
+<td></td>
+<td><code>false</code></td>
+<td>Id from your exchange</td>
+</tr>
+<tr>
+<td>fee_payer</td>
+<td>1</td>
+<td><code>false</code></td>
+<td><code>1</code> charge fee from account balance. <code>2</code> charge fee from withdraw amount. If fee currency different than the withdraw <code>ticker</code>, then only <code>1</code> option is possible.</td>
+</tr>
+<tr>
+<td>auto_buy_ticker</td>
+<td></td>
+<td><code>false</code></td>
+<td>Will create order auto_buy_ticker/ticker OR ticker/auto_buy_ticker. If pair doesn&#39;t exist will return error.</td>
+</tr>
+<tr>
+<td>auto_buy_percent</td>
+<td>5</td>
+<td><code>false</code></td>
+<td>Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative</td>
+</tr>
+</tbody></table>
+<h2 id='withdraw-history'>Withdraw History</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/withdraw/history'</span><span class="p">,</span>
+                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+                        <span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/withdraw/create</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+              <span class="p">},</span> 
+              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// process response    </span>
+<span class="p">});</span>
+</code></pre></div>
+<blockquote>
+<p>Sample output</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"next"</span><span class="p">:</span><span class="s2">" https://www.bitexbit.com/api/gateway/withdraw/history?page=2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"previous"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"results"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ticker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDT"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"network"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tron"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TR4d6N2HoC3Annqt2JK6HhQWuNARMNx5pW"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"memo"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Call after success"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"destination_tag"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"client_order_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order_123"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"fee_payer"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"auto_buy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"symbol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ETH"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">3300</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_success"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_risk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"aml_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-05-21T13:28:32.095Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span></code></pre></div>
+<aside class="warning">
+This method requires authorization.
+</aside>
+<h3 id='http-request-6'>HTTP Request</h3>
+<p><code>GET https://www.bitexbit.com/api/gateway​/withdraw/history</code></p>
+
+<p>Returns information about all created withdraw.</p>
+<h3 id='query-parameters-4'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ticker</td>
+<td>Ticker.</td>
+</tr>
+<tr>
+<td>network</td>
+<td>Ticker network .</td>
+</tr>
+<tr>
+<td>page</td>
+<td>A page number within the paginated result set.</td>
+</tr>
+<tr>
+<td>status</td>
+<td></td>
+</tr>
+<tr>
+<td>txid</td>
+<td></td>
+</tr>
+<tr>
+<td>address</td>
+<td></td>
+</tr>
+<tr>
+<td>ordering</td>
+<td>Which field to use when ordering the results.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>Limiting results.</td>
+</tr>
+</tbody></table>
+<h2 id='withdraw-statuses'>Withdraw Statuses</h2>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>10</td>
+<td>NEW</td>
+<td>Created new, need to be confirmed</td>
+</tr>
+<tr>
+<td>20</td>
+<td>CONFIRMED</td>
+<td>Confirmed by user, need to be verified</td>
+</tr>
+<tr>
+<td>23</td>
+<td>VERIFIED</td>
+<td>Verified by automatic system</td>
+</tr>
+<tr>
+<td>25</td>
+<td>MODERATION</td>
+<td>Moderation by operator</td>
+</tr>
+<tr>
+<td>26</td>
+<td>APPROVED</td>
+<td>Approved for send</td>
+</tr>
+<tr>
+<td>27</td>
+<td>SUSPENDED</td>
+<td>Suspended by operator</td>
+</tr>
+<tr>
+<td>30</td>
+<td>DONE</td>
+<td>Done</td>
+</tr>
+<tr>
+<td>40</td>
+<td>REFUSED</td>
+<td>Refused by operator</td>
+</tr>
+<tr>
+<td>50</td>
+<td>CANCELLED</td>
+<td>Cancelled by user</td>
+</tr>
+</tbody></table>
+<h1 id='aml'>AML</h1><h2 id='check-aml'>Check AML</h2>
+<p><code>Comming soon</code></p>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="python">Python</a>
+                <a href="#" data-language-name="javascript">Node.js</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
