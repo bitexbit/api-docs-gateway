@@ -55,9 +55,9 @@ def get_auth_headers(self, data = {}):
         sign = hmac.new('your keys secret'.encode(), msg.encode(), digestmod='sha256').hexdigest()
 
         return {
-            'X-KEY': 'your key',
-            'X-SIGN': sign,
-            'X-NONCE': str(int(time() * 1000)),
+            'X-API-Key': 'your key',
+            'X-Signature': sign,
+            'X-Nonce': str(int(time() * 1000)),
         }
 ```
 
@@ -84,20 +84,26 @@ function getAuthHeaders(payload = {}) {
   const sign = hmacSha256(API_KEY + serializePayload(payload), SECRET).toString();
 
   return {
-    'X-KEY': API_KEY,
-    'X-SIGN': sign,
-    'X-NONCE': Date.now()
+    'X-API-Key': API_KEY,
+    'X-Signature': sign,
+    'X-Nonce': Date.now()
   };
 }
 ```
 
 In order for access to private API methods, generate authorization keys [in profile settings](https://www.bitexbit.com/profile/api).
 
-All request to these methods must contain the following headers:
+- Make `nonce` - a number that must be unique and must increase with each call to the API
+- Make `payload` - string, concatenated with `path`, `nonce`, and `body`. Where
+  `path` - relative path without query params (example: `/api/v2/private/balance`) and
+  `body` - for `POST` request - json string from request data, for `GET` request empty string.
+- Make `signature` from `payload` and `secret`, using HMAC Authentication with SHA-256.
 
-* X-KEY - your key.
-* X-SIGN - query's POST data, sorted by keys and signed by your key's "secret" according to the HMAC-SHA256 method.
-* X-NONCE - integer value, must be greater then nonce in previous api call.
+### All request to these methods must contain the following headers:
+
+* `X-API-Key` - your key.
+* `X-Signature` - query's POST data, sorted by keys and signed by your key's "secret" according to the HMAC-SHA256 method.
+* `X-Nonce` - integer value, must be greater then nonce in previous api call.
 
 # HTTP API (v1)
 
