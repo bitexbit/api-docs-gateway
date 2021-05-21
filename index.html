@@ -411,9 +411,9 @@ We have limit in 2 calls per second from single account to authorization require
         <span class="n">sign</span> <span class="o">=</span> <span class="n">hmac</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'your keys secret'</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">msg</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">digestmod</span><span class="o">=</span><span class="s">'sha256'</span><span class="p">).</span><span class="n">hexdigest</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s">'X-KEY'</span><span class="p">:</span> <span class="s">'your key'</span><span class="p">,</span>
-            <span class="s">'X-SIGN'</span><span class="p">:</span> <span class="n">sign</span><span class="p">,</span>
-            <span class="s">'X-NONCE'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)),</span>
+            <span class="s">'X-API-Key'</span><span class="p">:</span> <span class="s">'your key'</span><span class="p">,</span>
+            <span class="s">'X-Signature'</span><span class="p">:</span> <span class="n">sign</span><span class="p">,</span>
+            <span class="s">'X-Nonce'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)),</span>
         <span class="p">}</span>
 </code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">hmacSha256</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">crypto-js/hmac-sha256</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// sha256 hash. or use you favorite u like</span>
 <span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// for http requests. or use you favorite u like</span>
@@ -437,20 +437,26 @@ We have limit in 2 calls per second from single account to authorization require
   <span class="kd">const</span> <span class="nx">sign</span> <span class="o">=</span> <span class="nx">hmacSha256</span><span class="p">(</span><span class="nx">API_KEY</span> <span class="o">+</span> <span class="nx">serializePayload</span><span class="p">(</span><span class="nx">payload</span><span class="p">),</span> <span class="nx">SECRET</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
 
   <span class="k">return</span> <span class="p">{</span>
-    <span class="dl">'</span><span class="s1">X-KEY</span><span class="dl">'</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
-    <span class="dl">'</span><span class="s1">X-SIGN</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sign</span><span class="p">,</span>
-    <span class="dl">'</span><span class="s1">X-NONCE</span><span class="dl">'</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
+    <span class="dl">'</span><span class="s1">X-API-Key</span><span class="dl">'</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">X-Signature</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sign</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">X-Nonce</span><span class="dl">'</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
   <span class="p">};</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>In order for access to private API methods, generate authorization keys <a href="https://www.bitexbit.com/profile/api">in profile settings</a>.</p>
 
-<p>All request to these methods must contain the following headers:</p>
-
 <ul>
-<li>X-KEY - your key.</li>
-<li>X-SIGN - query&#39;s POST data, sorted by keys and signed by your key&#39;s &quot;secret&quot; according to the HMAC-SHA256 method.</li>
-<li>X-NONCE - integer value, must be greater then nonce in previous api call.</li>
+<li>Make <code>nonce</code> - a number that must be unique and must increase with each call to the API</li>
+<li>Make <code>payload</code> - string, concatenated with <code>path</code>, <code>nonce</code>, and <code>body</code>. Where
+<code>path</code> - relative path without query params (example: <code>/api/v2/private/balance</code>) and
+<code>body</code> - for <code>POST</code> request - json string from request data, for <code>GET</code> request empty string.</li>
+<li>Make <code>signature</code> from <code>payload</code> and <code>secret</code>, using HMAC Authentication with SHA-256.</li>
+</ul>
+<h3 id='all-request-to-these-methods-must-contain-the-following-headers'>All request to these methods must contain the following headers:</h3>
+<ul>
+<li><code>X-API-Key</code> - your key.</li>
+<li><code>X-Signature</code> - query&#39;s POST data, sorted by keys and signed by your key&#39;s &quot;secret&quot; according to the HMAC-SHA256 method.</li>
+<li><code>X-Nonce</code> - integer value, must be greater then nonce in previous api call.</li>
 </ul>
 <h1 id='http-api-v1'>HTTP API (v1)</h1>
 <p>Read more about API v1 <a href="https://bitexbit.github.io/api-docs-v1">here</a></p>
