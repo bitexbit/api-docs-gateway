@@ -159,23 +159,31 @@ request.get({
     "ticker": "BTC",
     "network": "bitcoin",
     "min_deposit": "0.00100000",
+    "max_deposit": "10000000000.00000000",
+    "deposit_fee_amount": "0.00000000",
+    "deposit_fee_rate": "0.00000000",
     "min_withdraw": "0.00060000",
     "max_withdraw": "100.00000000",
     "withdraw_fee_amount": "0.00040000",
     "withdraw_fee_rate": "0.00000000",
     "withdraw_fee_currency": "BTC",
+    "is_fiat": false,
     "is_deposit_enabled": true,
     "is_withdraw_enabled": true
   },
   {
-    "ticker": "USDT",
-    "network": "tron",
-    "min_deposit": "0.50000000",
-    "min_withdraw": "10.00000000",
-    "max_withdraw": "50000.00000000",
-    "withdraw_fee_amount": "2.00000000",
-    "withdraw_fee_rate": "0.00000000",
-    "withdraw_fee_currency": "USDT",
+    "ticker": "UAH",
+    "network": "wiretransfer",
+    "min_deposit": "25.20000000",
+    "max_deposit": "100000.00000000",
+    "deposit_fee_amount": "5.00000000",
+    "deposit_fee_rate": "0.01000000",
+    "min_withdraw": "100.00000000",
+    "max_withdraw": "10000.00000000",
+    "withdraw_fee_amount": "5.00000000",
+    "withdraw_fee_rate": "0.01500000",
+    "withdraw_fee_currency": "UAH",
+    "is_fiat": true,
     "is_deposit_enabled": true,
     "is_withdraw_enabled": true
   },
@@ -199,7 +207,7 @@ Parameter | Default | Description
 ordering  | default | Ordering parameter. `id` - ascending sorting, `-id` - descending sorting
 
 
-# Wallets
+# Crypto Wallets
 
 ## Wallet Create
 
@@ -276,7 +284,7 @@ Parameter       | Default | Required |Description
 --------------- | ------- | ---------|-----------
 ticker          |         | `true`   | Ticker.
 network         |         | `true`   | Ticker network .
-callback_url    |         | `false`  | Callback url.
+callback_url    |         | `false`  | Callback url. `POST` method. Must return `200` status.
 convert_ticker  |         | `false`  | Will create order convert_ticker/ticker OR ticker/convert_ticker. If pair doesn't exist will return error.
 convert_limit   |         | `false`  | Order max amount. If deposit 100 and convert_limit = 20. Order amount set to 20.
 convert_percent | 5       | `false`  | Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative
@@ -434,13 +442,246 @@ ordering        | Which field to use when ordering the results.
 limit           | Limiting results.
 
 
-## Deposit Statuses
 
-Code   |   Status   |Description
--------|------------|----------
-1      |  PENDING   | when waiting for confirmation
-5      |  CONFIRMED | when on balance
-6      |  REJECTED  |when impossible to approve
+# Fiat Invoice
+
+## Create invoice
+```python
+import requests
+
+body =  {
+  "ticker": "USDT",
+  "network": "payeer",
+  "amount" : 120,
+  "payment_url": "https://exchange.com/success",
+  "cancel_url":  "https://exchange.com/cancel",
+  "callback_url" : "https://exchange.com/api/callback",
+  "convert_ticker": "ETH",
+  "convert_limit": 10000,
+  "convert_percent": 2,
+  "client_ip": "192.168.0.1"
+}
+
+response = requests.post(
+                        'https://www.bitexbit.com/​api​/gateway​/invoice/create',
+                        data = body, 
+                        headers = get_auth_headers(body)
+                        )
+```
+
+```javascript
+const request = require('request');
+
+const body =  {
+  "ticker": "USDT",
+  "network": "payeer",
+  "amount" : 120,
+  "payment_url": "https://exchange.com/success",
+  "cancel_url":  "https://exchange.com/cancel",
+  "callback_url" : "https://exchange.com/api/callback",
+  "convert_ticker": "ETH",
+  "convert_limit": 10000,
+  "convert_percent": 2,
+  "client_ip": "192.168.0.1"
+}
+
+request.post({
+              url:'https://www.bitexbit.com/​api​/gateway​/invoice/create',
+              form:body,
+              headers:getAuthHeaders(body)
+              }, 
+              function (error, response, body) {
+    // process response    
+});
+```
+
+> Sample output
+
+```json
+{
+  "slug": "659b46e33ae05ce03b19ec39f64dbea6f29e",
+  "ticker": "USDT",
+  "network": "payeer",
+  "amount": 120,
+  "proceed_url": "payment-url",
+  "payment_url": "https://exchange.com/success",
+  "convert_ticker": "ETH",
+  "convert_limit": "10000.00000000",
+  "convert_percent": "2.00000000",
+  "created_at": "2021-05-21T12:10:54.552073Z",
+
+}
+```
+
+
+<aside class="warning">
+This method requires authorization.
+</aside>
+
+### HTTP Request
+
+`POST https://www.bitexbit.com/api/gateway​/invoice/create`
+
+Returns information about invoice and payment url.
+
+
+### POST Params
+
+Parameter       | Default | Required |Description
+--------------- | ------- | ---------|-----------
+ticker          |         | `true`   | Ticker.
+network         |         | `true`   | Ticker network.
+amount          |         | `true`   | Amount to deposit.
+callback_url    |         | `false`  | Callback url. `POST` method. Must return `200` status.
+payment_url     |         | `false`  | Redirect url on success.
+cancel_url      |         | `false`  | Redirect url on cancel.
+convert_ticker  |         | `false`  | Will create order convert_ticker/ticker OR ticker/convert_ticker. If pair doesn't exist will return error.
+client_ip       |         | `true`   | User ip. Only from this ip deposit is possible. 
+convert_limit   |         | `false`  | Order max amount. If deposit 100 and convert_limit = 20. Order amount set to 20.
+convert_percent | 5       | `false`  | Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative
+
+
+## Invoices List
+
+```python
+import requests
+
+response = requests.get('https://www.bitexbit.com/​api​/gateway​/invoices',headers = get_auth_headers({}))
+```
+
+```javascript
+const request = require('request');
+
+request.get({
+              url: 'https://www.bitexbit.com/​api​/gateway​/invoices',
+              headers: getAuthHeaders()
+            }, 
+            function (error, response, body) {
+            // process response    
+});
+```
+
+> Sample output
+
+```json
+{
+  "count": 2,
+  "next":" https://www.bitexbit.com/api/gateway/invoices?page=2",
+  "previous": null,
+  "results": [
+    {
+      "slug": "659b46e33ae05ce03b19ec39f64dbea6f29e",
+      "ticker": "USDT",
+      "network": "payeer",
+      "amount": 120,
+      "callback_url" : "https://exchange.com/api/callback",
+      "convert_ticker": "ETH",
+      "convert_limit": "10000.00000000",
+      "convert_percent": "2.00000000",
+      "created_at": "2021-05-21T12:10:54.552073Z"
+    }
+  ]
+}
+```
+
+<aside class="warning">
+This method requires authorization.
+</aside>
+
+### HTTP Request
+
+`GET https://www.bitexbit.com/api/gateway​/invoices`
+
+Returns information about all created invoices.
+
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page      | 1       | A page number within the paginated result set.
+limit     | all     | Limiting results.
+ordering  |default  | Ordering parameter. `id` - ascending sorting, `-id` - descending sorting
+
+
+
+## Invoices History
+
+```python
+import requests
+
+response = requests.get('https://www.bitexbit.com/​api​/gateway​/invoice/history', headers = get_auth_headers(body))
+```
+
+```javascript
+const request = require('request');
+
+request.get({
+              url:'https://www.bitexbit.com/​api​/gateway​/invoice/history',
+              headers:getAuthHeaders(body)
+              }, 
+              function (error, response, body) {
+    // process response    
+});
+```
+
+> Sample output
+
+```json
+ {
+  "count": 123,
+  "next":" https://www.bitexbit.com/api/gateway/invoice/history?page=2",
+  "previous": null,
+  "results": [
+      {
+        "date": "2021-05-25T14:54:32.826135Z",
+        "amount": "292.00000000",
+        "fee": "8.00000000",
+        "ticker": "UAH",
+        "network": "wiretransfer",
+        "status": "5",
+        "txid": "361865033",
+        "convert": {
+          "symbol": "USDT_UAH",
+          "amount": "9.04537866",
+          "price": "28.52850000",
+          "side": "BUY",
+          "state": "partial-filled"
+        },
+        "created_at": "2021-05-25T14:54:32.826135Z"
+      }
+  ]
+}
+```
+
+<aside class="warning">
+This method requires authorization.
+</aside>
+
+### HTTP Request
+
+`GET https://www.bitexbit.com/api/gateway​/wallet/history`
+
+Returns information about all wallets deposits.
+
+
+### Query Parameters
+
+Parameter       | Description
+--------------- | -----------
+ticker          | Ticker.
+network         | Ticker network .
+page            | A page number within the paginated result set.
+status          | 
+txid            | 
+address         | 
+payment_id      |
+memo            |
+destination_tag |
+ordering        | Which field to use when ordering the results.
+limit           | Limiting results.
+
+
 
 
 
@@ -513,7 +754,7 @@ request.post({
   "memo": null,
   "comment": "Call after success",
   "destination_tag":null,
-  "amount": 22,
+  "amount": "22.0000000",
   "callback_url": null,
   "client_order_id": "order_123",
   "fee_payer": 1,
@@ -525,10 +766,6 @@ request.post({
     "side": 1,
     "state": "string"
   },
-  "txid": "string",
-  "aml_success": "string",
-  "aml_risk": "string",
-  "aml_url": "string",
   "created_at": "2021-05-21T13:28:32.095Z"
 }
 ```
@@ -551,9 +788,10 @@ Parameter       | Default | Required |Description
 --------------- | ------- | ---------|-----------
 ticker          |         | `true`   | Ticker.
 network         |         | `true`   | Ticker network .
-address         |         | `true`   | Address to withdraw.
+address         |         |          | Address to withdraw. Required if Crypto.
+card            |         |          | Card to withdraw. Required if Fiat.
 amount          |         | `true`   | Amount to withdraw.
-callback_url    |         | `false`  | Callback url.
+callback_url    |         | `false`  | Callback url. `POST` method. Must return `200` status.
 comment         |         | `false`  | Comment.
 client_order_id |         | `false`  | Id from your exchange
 fee_payer       |  1      | `false`  | `1` charge fee from account balance. `2` charge fee from withdraw amount. If fee currency different than the withdraw `ticker`, then only `1` option is possible.
@@ -648,6 +886,19 @@ ordering        | Which field to use when ordering the results.
 limit           | Limiting results.
 
 
+
+
+
+# Statuses
+
+## Deposit Statuses
+
+Code   |   Status   |Description
+-------|------------|----------
+1      |  PENDING   | When waiting for confirmation
+5      |  CONFIRMED | When on balance
+6      |  REJECTED  | When impossible to approve
+
 ## Withdraw Statuses
 
 Code   |  Status    |Description
@@ -661,6 +912,13 @@ Code   |  Status    |Description
 30     |  DONE      | Done
 40     |  REFUSED   | Refused by operator
 50     |  CANCELLED | Cancelled by user
+
+
+
+
+
+
+
 
 # AML
 
