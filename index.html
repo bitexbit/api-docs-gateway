@@ -409,11 +409,7 @@
 <h1 id='http-api-gateway'>HTTP API Gateway</h1>
 <p>HTTP API endpoint available on <a href="https://www.bitexbit.com/api/gateway/">https://www.bitexbit.com/api/gateway</a>.</p>
 
-<p>Some methods requires authorization <a href="#authorization">read below</a>.</p>
-
-<aside class="success">
-We have limit in 2 calls per second from single account to authorization required methods and 100 calls per secong from single IP address to public methods.
-</aside>
+<p>All methods requires authorization <a href="#authorization">read below</a>.</p>
 
 <p>All HTTP methods accept <code>JSON</code> formats of requests and responses if it not specified by headers.  </p>
 <h2 id='authorization'>Authorization</h2>
@@ -422,60 +418,150 @@ We have limit in 2 calls per second from single account to authorization require
 </blockquote>
 <div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">hmac</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlencode</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="k">def</span> <span class="nf">get_auth_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{}):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s">'your key'</span> <span class="o">+</span> <span class="n">urlencode</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s">"https://www.bitexbit.com"</span>
+<span class="n">API_KEY</span> <span class="o">=</span> <span class="s">"0000-0000..."</span>
+<span class="n">SECRET</span> <span class="o">=</span> <span class="s">"Z%2........"</span>
 
-        <span class="n">sign</span> <span class="o">=</span> <span class="n">hmac</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'your keys secret'</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">msg</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">digestmod</span><span class="o">=</span><span class="s">'sha256'</span><span class="p">).</span><span class="n">hexdigest</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s">'X-API-Key'</span><span class="p">:</span> <span class="s">'your key'</span><span class="p">,</span>
-            <span class="s">'X-Signature'</span><span class="p">:</span> <span class="n">sign</span><span class="p">,</span>
-            <span class="s">'X-Nonce'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)),</span>
-        <span class="p">}</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">hmacSha256</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">crypto-js/hmac-sha256</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// sha256 hash. or use you favorite u like</span>
-<span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// for http requests. or use you favorite u like</span>
+<span class="k">def</span> <span class="nf">get_signature</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">''</span><span class="p">):</span>
+    <span class="s">"""
+    Returns signature of the request that signed by secret key
+    :param key: public api key
+    :param path: ape request path
+    :param timeout: unique nonce
+    :param body: serialized body of the future request
+    :return: sha56 hash as hexadecimal string
+    """</span>
 
-<span class="kd">const</span> <span class="nx">BASE_URL</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/api/v1</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">API_KEY</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0000-0000...</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">SECRET</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Z%2........</span><span class="dl">'</span><span class="p">;</span>
+    <span class="c1"># concatenate path with timeout and body of future request
+</span>    <span class="n">payload</span> <span class="o">=</span> <span class="s">f'</span><span class="si">{</span><span class="n">key</span><span class="si">}{</span><span class="n">path</span><span class="si">}{</span><span class="n">timeout</span><span class="si">}{</span><span class="n">body</span><span class="si">}</span><span class="s">'</span>
+    <span class="c1"># return hex string of sha256 of payload, signed by secret key. secret key already is bytes array
+</span>    <span class="k">return</span> <span class="n">hmac</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">SECRET</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">payload</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">digestmod</span><span class="o">=</span><span class="s">'sha256'</span><span class="p">).</span><span class="n">hexdigest</span><span class="p">()</span>
 
-<span class="c1">//Serialize for singing only. Can be used in request body if u like urlencoded form format instead of json</span>
-<span class="kd">function</span> <span class="nx">serializePayload</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="nb">Object</span>
-    <span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="c1">// get keys of payload object</span>
-    <span class="p">.</span><span class="nx">sort</span><span class="p">()</span> <span class="c1">// sort keys</span>
-    <span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">key</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">key</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">=</span><span class="dl">"</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">payload</span><span class="p">[</span><span class="nx">key</span><span class="p">]))</span> <span class="c1">// each value should be url encoded. the most sensitive part for sign checking</span>
-    <span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="dl">'</span><span class="s1">&amp;</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// to sting, separate with ampersand</span>
-<span class="p">}</span>
 
-<span class="c1">// Generates auth headers</span>
-<span class="kd">function</span> <span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">payload</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
-  <span class="c1">// get SHA256 of &lt;API_KEY&gt;&lt;sorted urlencoded payload string&gt;&lt;SECRET&gt;</span>
-  <span class="kd">const</span> <span class="nx">sign</span> <span class="o">=</span> <span class="nx">hmacSha256</span><span class="p">(</span><span class="nx">API_KEY</span> <span class="o">+</span> <span class="nx">serializePayload</span><span class="p">(</span><span class="nx">payload</span><span class="p">),</span> <span class="nx">SECRET</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">500</span>  <span class="c1"># 500 is timeout for execute
+</span>    <span class="c1"># get signature hash
+</span>    <span class="n">signature</span> <span class="o">=</span> <span class="n">get_signature</span><span class="p">(</span><span class="n">API_KEY</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="s">''</span><span class="p">)</span>
 
-  <span class="k">return</span> <span class="p">{</span>
-    <span class="dl">'</span><span class="s1">X-API-Key</span><span class="dl">'</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
-    <span class="dl">'</span><span class="s1">X-Signature</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sign</span><span class="p">,</span>
-    <span class="dl">'</span><span class="s1">X-Nonce</span><span class="dl">'</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
+    <span class="c1"># create headers dict with standard and custom API headers
+</span>    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'Content-Type'</span><span class="p">:</span> <span class="s">'application/json; charset=utf-8'</span><span class="p">,</span>
+        <span class="s">'Accept'</span><span class="p">:</span> <span class="s">'application/json'</span><span class="p">,</span>
+        <span class="s">'X-Key'</span><span class="p">:</span> <span class="n">API_KEY</span><span class="p">,</span>
+        <span class="s">'X-Timeout'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeout</span><span class="p">),</span>
+        <span class="s">'X-Sign'</span><span class="p">:</span> <span class="n">signature</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="s">f'</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s">'</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+    <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">500</span>  <span class="c1"># 500 is timeout for execute
+</span>
+    <span class="c1"># dump payload object into JSON string
+</span>    <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="c1"># get signature hash
+</span>    <span class="n">signature</span> <span class="o">=</span> <span class="n">get_signature</span><span class="p">(</span><span class="n">API_KEY</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+
+    <span class="c1"># create headers dict with standard and custom API headers
+</span>    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'Content-Type'</span><span class="p">:</span> <span class="s">'application/json; charset=utf-8'</span><span class="p">,</span>
+        <span class="s">'Accept'</span><span class="p">:</span> <span class="s">'application/json'</span><span class="p">,</span>
+        <span class="s">'X-Key'</span><span class="p">:</span> <span class="n">API_KEY</span><span class="p">,</span>
+        <span class="s">'X-Timeout'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeout</span><span class="p">),</span>
+        <span class="s">'X-Sign'</span><span class="p">:</span> <span class="n">signature</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># execute POST request on server using prepared data
+</span>    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="s">f'</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s">'</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
+
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">sha256</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">js-sha256</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// sha256 hash. or use you favorite u like</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// for http requests. or use you favorite u like</span>
+
+<span class="kd">const</span> <span class="nx">BASE_URL</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://www.bitexbit.com</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">API_KEY</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">0000-0000...</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">SECRET</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">Z%2........</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">client</span> <span class="o">=</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+  <span class="na">baseURL</span><span class="p">:</span> <span class="nx">BASE_URL</span><span class="p">,</span>
+  <span class="na">timeout</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">Content-Type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json; charset=utf-8</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">Accept</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="na">responseType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">json</span><span class="dl">"</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">getSignature</span> <span class="o">=</span> <span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">,</span> <span class="nx">body</span> <span class="o">=</span> <span class="dl">""</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">payload</span> <span class="o">=</span> <span class="nx">API_KEY</span> <span class="o">+</span> <span class="nx">path</span> <span class="o">+</span> <span class="nx">timeout</span> <span class="o">+</span> <span class="nx">body</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">hash</span> <span class="o">=</span> <span class="nx">sha256</span><span class="p">.</span><span class="nx">hmac</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">SECRET</span><span class="p">);</span>
+  <span class="nx">hash</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">payload</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">hash</span><span class="p">.</span><span class="nx">hex</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="kd">get</span> <span class="o">=</span> <span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">500</span><span class="p">;</span> <span class="c1">// 500 is timeout for execute</span>
+
+  <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">getSignature</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">,</span> <span class="dl">""</span><span class="p">);</span>
+
+  <span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">params</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">X-Key</span><span class="dl">"</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">X-Timeout</span><span class="dl">"</span><span class="p">:</span> <span class="nx">timeout</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">X-Sign</span><span class="dl">"</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+    <span class="p">},</span>
   <span class="p">};</span>
-<span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">post</span> <span class="o">=</span> <span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">body</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">500</span><span class="p">;</span> <span class="c1">// 500 is timeout for execute</span>
+
+  <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">getSignature</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+
+  <span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">X-Key</span><span class="dl">"</span><span class="p">:</span> <span class="nx">API_KEY</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">X-Timeout</span><span class="dl">"</span><span class="p">:</span> <span class="nx">timeout</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">X-Sign</span><span class="dl">"</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
+<span class="p">};</span>
 </code></pre></div>
 <p>In order for access to private API methods, generate authorization keys <a href="https://www.bitexbit.com/profile/api">in profile settings</a>.</p>
 
 <ul>
-<li>Make <code>nonce</code> - a number that must be unique and must increase with each call to the API</li>
-<li>Make <code>payload</code> - string, concatenated with <code>path</code>, <code>nonce</code>, and <code>body</code>. Where
-<code>path</code> - relative path without query params (example: <code>/api/v2/private/balance</code>) and
+<li>Make <code>timeout</code> - int, timeout to execute call</li>
+<li>Make <code>payload</code> - string, concatenated with <code>api key</code>,<code>path</code>, <code>timeout</code>, and <code>body</code>. Where <code>path</code> - relative path without query params (example: <code>/api/gateway/payment-methods</code>) and
 <code>body</code> - for <code>POST</code> request - json string from request data, for <code>GET</code> request empty string.</li>
 <li>Make <code>signature</code> from <code>payload</code> and <code>secret</code>, using HMAC Authentication with SHA-256.</li>
 </ul>
 <h3 id='all-request-to-these-methods-must-contain-the-following-headers'>All request to these methods must contain the following headers:</h3>
 <ul>
-<li><code>X-API-Key</code> - your key.</li>
-<li><code>X-Signature</code> - query&#39;s POST data, sorted by keys and signed by your key&#39;s &quot;secret&quot; according to the HMAC-SHA256 method.</li>
-<li><code>X-Nonce</code> - integer value, must be greater then nonce in previous api call.</li>
+<li><code>X-Key</code> - your key.</li>
+<li><code>X-Sign</code> - query&#39;s POST data, signed by your <code>secret</code> according to the HMAC-SHA256 method.</li>
+<li><code>X-Timeout</code> - integer value, timeout to execute call.</li>
 </ul>
 <h1 id='http-api-v1'>HTTP API (v1)</h1>
 <p>Read more about API v1 <a href="https://bitexbit.github.io/api-docs-v1">here</a></p>
@@ -515,21 +601,18 @@ We have limit in 2 calls per second from single account to authorization require
 <td>Looks like we under high load. Try your request later.</td>
 </tr>
 </tbody></table>
-<h1 id='payment-methods'>Payment Methods</h1><h2 id='methods'>Methods</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h1 id='payment-methods'>Payment Methods</h1><h2 id='methods'>Methods</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"/api/gateway​/payment-methods"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>
-                        <span class="s">'https://www.bitexbit.com/api/gateway​/payment-methods'</span><span class="p">,</span>
-                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">({})</span>
-                        <span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/api/gateway​/payment-methods</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/payment-methods</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span> <span class="nx">getAuthHeaders</span><span class="p">()</span>
-            <span class="p">},</span> 
-            <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// process response    </span>
-<span class="p">});</span>
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -590,8 +673,7 @@ This method requires authorization.
 <td>Ordering parameter. <code>id</code> - ascending sorting, <code>-id</code> - descending sorting</td>
 </tr>
 </tbody></table>
-<h1 id='crypto-wallets'>Crypto Wallets</h1><h2 id='wallet-create'>Wallet Create</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
-
+<h1 id='crypto-wallets'>Crypto Wallets</h1><h2 id='wallet-create'>Wallet Create</h2><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="s">"ticker"</span><span class="p">:</span> <span class="s">"ETH"</span><span class="p">,</span>
   <span class="s">"network"</span><span class="p">:</span> <span class="s">"ethereum"</span><span class="p">,</span>
@@ -600,13 +682,9 @@ This method requires authorization.
   <span class="s">"convert_percent"</span><span class="p">:</span> <span class="mi">2</span>
 <span class="p">}</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
-                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/wallet​/create'</span><span class="p">,</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">body</span><span class="p">,</span> 
-                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-                        <span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+<span class="n">post</span><span class="p">(</span><span class="s">"/​api​/gateway​/wallet​/create"</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
 <span class="kd">const</span> <span class="nx">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="dl">"</span><span class="s2">ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ETH</span><span class="dl">"</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">network</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ethereum</span><span class="dl">"</span><span class="p">,</span>
@@ -615,14 +693,14 @@ This method requires authorization.
   <span class="dl">"</span><span class="s2">convert_percent</span><span class="dl">"</span><span class="p">:</span> <span class="mi">2</span>
 <span class="p">}</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallet​/create</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">form</span><span class="p">:</span><span class="nx">body</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
-<span class="p">});</span>
+<span class="nx">post</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/wallet​/create</span><span class="dl">"</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
+
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -692,18 +770,18 @@ This method requires authorization.
 <td>Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative</td>
 </tr>
 </tbody></table>
-<h2 id='wallets-list'>Wallets List</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='wallets-list'>Wallets List</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"/​api​/gateway​/wallets"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/wallets'</span><span class="p">,</span><span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">({}))</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/wallets</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallets</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span> <span class="nx">getAuthHeaders</span><span class="p">()</span>
-            <span class="p">},</span> 
-            <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// process response    </span>
-<span class="p">});</span>
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -769,18 +847,19 @@ This method requires authorization.
 <td>Ordering parameter. <code>id</code> - ascending sorting, <code>-id</code> - descending sorting</td>
 </tr>
 </tbody></table>
-<h2 id='wallet-history'>Wallet History</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='wallet-history'>Wallet History</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"https://www.bitexbit.com/​api​/gateway​/wallet​/history"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/wallet​/history'</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/wallet​/history</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/wallet​/history</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
-<span class="p">});</span>
+
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -869,8 +948,7 @@ This method requires authorization.
 <td>Limiting results.</td>
 </tr>
 </tbody></table>
-<h1 id='fiat-invoice'>Fiat Invoice</h1><h2 id='create-invoice'>Create invoice</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
-
+<h1 id='fiat-invoice'>Fiat Invoice</h1><h2 id='create-invoice'>Create invoice</h2><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="s">"ticker"</span><span class="p">:</span> <span class="s">"USDT"</span><span class="p">,</span>
   <span class="s">"network"</span><span class="p">:</span> <span class="s">"payeer"</span><span class="p">,</span>
@@ -884,13 +962,9 @@ This method requires authorization.
   <span class="s">"client_ip"</span><span class="p">:</span> <span class="s">"192.168.0.1"</span>
 <span class="p">}</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
-                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/invoice/create'</span><span class="p">,</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">body</span><span class="p">,</span> 
-                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-                        <span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+<span class="n">post</span><span class="p">(</span><span class="s">"/​api​/gateway​/invoice/create"</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
 <span class="kd">const</span> <span class="nx">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="dl">"</span><span class="s2">ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">USDT</span><span class="dl">"</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">network</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">payeer</span><span class="dl">"</span><span class="p">,</span>
@@ -904,14 +978,14 @@ This method requires authorization.
   <span class="dl">"</span><span class="s2">client_ip</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">192.168.0.1</span><span class="dl">"</span>
 <span class="p">}</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/invoice/create</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">form</span><span class="p">:</span><span class="nx">body</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
-<span class="p">});</span>
+<span class="nx">post</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/invoice/create</span><span class="dl">"</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
+
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -1007,18 +1081,19 @@ This method requires authorization.
 <td>Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative</td>
 </tr>
 </tbody></table>
-<h2 id='invoices-list'>Invoices List</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='invoices-list'>Invoices List</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"/​api​/gateway​/invoices"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/invoices'</span><span class="p">,</span><span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">({}))</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/invoices</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/invoices</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span> <span class="nx">getAuthHeaders</span><span class="p">()</span>
-            <span class="p">},</span> 
-            <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// process response    </span>
-<span class="p">});</span>
+
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -1073,18 +1148,18 @@ This method requires authorization.
 <td>Ordering parameter. <code>id</code> - ascending sorting, <code>-id</code> - descending sorting</td>
 </tr>
 </tbody></table>
-<h2 id='invoices-history'>Invoices History</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='invoices-history'>Invoices History</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"/​api​/gateway​/invoice/history"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://www.bitexbit.com/​api​/gateway​/invoice/history'</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/invoice/history</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/invoice/history</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
-<span class="p">});</span>
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -1173,8 +1248,7 @@ This method requires authorization.
 <td>Limiting results.</td>
 </tr>
 </tbody></table>
-<h1 id='withdraw'>Withdraw</h1><h2 id='withdraw-create'>Withdraw Create</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
-
+<h1 id='withdraw'>Withdraw</h1><h2 id='withdraw-create'>Withdraw Create</h2><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="s">"ticker"</span><span class="p">:</span> <span class="s">"USDT"</span><span class="p">,</span>
   <span class="s">"network"</span><span class="p">:</span> <span class="s">"tron"</span><span class="p">,</span>
@@ -1190,13 +1264,10 @@ This method requires authorization.
   <span class="s">"auto_buy_percent"</span><span class="p">:</span> <span class="mi">10</span>
 <span class="p">}</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
-                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/withdraw/create'</span><span class="p">,</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">body</span><span class="p">,</span> 
-                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-                        <span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+<span class="n">post</span><span class="p">(</span><span class="s">"/​api​/gateway​/withdraw/create"</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 
+
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
 <span class="kd">const</span> <span class="nx">body</span> <span class="o">=</span>  <span class="p">{</span>
   <span class="dl">"</span><span class="s2">ticker</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">USDT</span><span class="dl">"</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">network</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">tron</span><span class="dl">"</span><span class="p">,</span>
@@ -1212,14 +1283,15 @@ This method requires authorization.
   <span class="dl">"</span><span class="s2">auto_buy_percent</span><span class="dl">"</span><span class="p">:</span> <span class="mi">10</span>
 <span class="p">}</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/withdraw/create</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">form</span><span class="p">:</span><span class="nx">body</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
+
+<span class="nx">post</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/withdraw/create</span><span class="dl">"</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">//process response</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// handle error</span>
 <span class="p">});</span>
+
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
@@ -1331,21 +1403,18 @@ This method requires authorization.
 <td>Order price relative to market. If market price=100 and convert_percent=10, order price for sell=90, for buy=110. Can be negative</td>
 </tr>
 </tbody></table>
-<h2 id='withdraw-history'>Withdraw History</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='withdraw-history'>Withdraw History</h2><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">get</span><span class="p">(</span><span class="s">"/​api​/gateway​/withdraw/history"</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
-                        <span class="s">'https://www.bitexbit.com/​api​/gateway​/withdraw/history'</span><span class="p">,</span>
-                        <span class="n">headers</span> <span class="o">=</span> <span class="n">get_auth_headers</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-                        <span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>
+<span class="kd">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/​api​/gateway​/withdraw/history</span><span class="dl">"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">//process response</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// handle error</span>
+  <span class="p">});</span>
 
-<span class="nx">request</span><span class="p">.</span><span class="kd">get</span><span class="p">({</span>
-              <span class="na">url</span><span class="p">:</span><span class="dl">'</span><span class="s1">https://www.bitexbit.com/​api​/gateway​/withdraw/create</span><span class="dl">'</span><span class="p">,</span>
-              <span class="na">headers</span><span class="p">:</span><span class="nx">getAuthHeaders</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-              <span class="p">},</span> 
-              <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// process response    </span>
-<span class="p">});</span>
 </code></pre></div>
 <blockquote>
 <p>Sample output</p>
