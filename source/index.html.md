@@ -32,11 +32,7 @@ Service [bitexbit.com](https://www.bitexbit.com) provides open API for trading o
 
 HTTP API endpoint available on [https://www.bitexbit.com/api/gateway](https://www.bitexbit.com/api/gateway/).
 
-Some methods requires authorization [read below](#authorization).
-
-<aside class="success">
-We have limit in 2 calls per second from single account to authorization required methods and 100 calls per secong from single IP address to public methods.
-</aside>
+All methods requires authorization [read below](#authorization).
 
 All HTTP methods accept `JSON` formats of requests and responses if it not specified by headers.  
 
@@ -47,63 +43,153 @@ All HTTP methods accept `JSON` formats of requests and responses if it not speci
 ```python
 import hmac
 from time import time
-from urllib.parse import urlencode
+import json
+import requests
 
-def get_auth_headers(self, data = {}):
-        msg = 'your key' + urlencode(sorted(data.items(), key=lambda val: val[0]))
+BASE_URL = "https://www.bitexbit.com"
+API_KEY = "0000-0000..."
+SECRET = "Z%2........"
 
-        sign = hmac.new('your keys secret'.encode(), msg.encode(), digestmod='sha256').hexdigest()
 
-        return {
-            'X-API-Key': 'your key',
-            'X-Signature': sign,
-            'X-Nonce': str(int(time() * 1000)),
-        }
+def get_signature(key: str, path: str, timeout: int, body: str = ''):
+    """
+    Returns signature of the request that signed by secret key
+    :param key: public api key
+    :param path: ape request path
+    :param timeout: unique nonce
+    :param body: serialized body of the future request
+    :return: sha56 hash as hexadecimal string
+    """
+
+    # concatenate path with timeout and body of future request
+    payload = f'{key}{path}{timeout}{body}'
+    # return hex string of sha256 of payload, signed by secret key. secret key already is bytes array
+    return hmac.new(SECRET.encode(), payload.encode(), digestmod='sha256').hexdigest()
+
+
+def get(path: str, **params):
+    timeout = int(time() * 1000) + 500  # 500 is timeout for execute
+    # get signature hash
+    signature = get_signature(API_KEY, path, timeout, '')
+
+    # create headers dict with standard and custom API headers
+    headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json',
+        'X-Key': API_KEY,
+        'X-Timeout': str(timeout),
+        'X-Sign': signature,
+    }
+
+    response = requests.get(
+        url=f'{BASE_URL}{path}',
+        headers=headers,
+        params=params,
+    )
+
+    return response.json()
+
+
+def post(path: str, payload):
+    timeout = int(time() * 1000) + 500  # 500 is timeout for execute
+
+    # dump payload object into JSON string
+    body = json.dumps(payload)
+
+    # get signature hash
+    signature = get_signature(API_KEY, path, timeout, body)
+
+    # create headers dict with standard and custom API headers
+    headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json',
+        'X-Key': API_KEY,
+        'X-Timeout': str(timeout),
+        'X-Sign': signature,
+    }
+
+    # execute POST request on server using prepared data
+    response = requests.post(
+        url=f'{BASE_URL}{path}',
+        headers=headers,
+        data=body.encode(),
+    )
+
+    return response.json()
+
 ```
 
 ```javascript
-const hmacSha256 = require('crypto-js/hmac-sha256'); // sha256 hash. or use you favorite u like
-const request = require('request'); // for http requests. or use you favorite u like
+const sha256 = require("js-sha256"); // sha256 hash. or use you favorite u like
+const axios = require("axios"); // for http requests. or use you favorite u like
 
-const BASE_URL = 'https://www.bitexbit.com/api/v1';
-const API_KEY = '0000-0000...';
-const SECRET = 'Z%2........';
+const BASE_URL = "https://www.bitexbit.com";
+const API_KEY = "0000-0000...";
+const SECRET = "Z%2........";
 
-//Serialize for singing only. Can be used in request body if u like urlencoded form format instead of json
-function serializePayload(payload) {
-  return Object
-    .keys(payload) // get keys of payload object
-    .sort() // sort keys
-    .map((key) => key + "=" + encodeURIComponent(payload[key])) // each value should be url encoded. the most sensitive part for sign checking
-    .join('&'); // to sting, separate with ampersand
-}
+const client = axios.create({
+  baseURL: BASE_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json; charset=utf-8",
+    Accept: "application/json",
+  },
+  responseType: "json",
+});
 
-// Generates auth headers
-function getAuthHeaders(payload = {}) {
-  // get SHA256 of <API_KEY><sorted urlencoded payload string><SECRET>
-  const sign = hmacSha256(API_KEY + serializePayload(payload), SECRET).toString();
+const getSignature = (path, timeout, body = "") => {
+  const payload = API_KEY + path + timeout + body;
+  const hash = sha256.hmac.create(SECRET);
+  hash.update(payload);
+  return hash.hex();
+};
 
-  return {
-    'X-API-Key': API_KEY,
-    'X-Signature': sign,
-    'X-Nonce': Date.now()
+const get = (path, params) => {
+  const timeout = Date.now() + 500; // 500 is timeout for execute
+
+  const signature = getSignature(path, timeout, "");
+
+  const config = {
+    params,
+    headers: {
+      "X-Key": API_KEY,
+      "X-Timeout": timeout,
+      "X-Sign": signature,
+    },
   };
-}
+
+  return client.get(path, config);
+};
+
+const post = (path, body = {}) => {
+  const timeout = Date.now() + 500; // 500 is timeout for execute
+
+  const signature = getSignature(path, timeout, JSON.stringify(body));
+
+  const config = {
+    headers: {
+      "X-Key": API_KEY,
+      "X-Timeout": timeout,
+      "X-Sign": signature,
+    },
+  };
+
+  return client.post(path, body, config);
+};
 ```
 
 In order for access to private API methods, generate authorization keys [in profile settings](https://www.bitexbit.com/profile/api).
 
-- Make `nonce` - a number that must be unique and must increase with each call to the API
-- Make `payload` - string, concatenated with `path`, `nonce`, and `body`. Where
-  `path` - relative path without query params (example: `/api/v2/private/balance`) and
+- Make `timeout` - int, timeout to execute call
+- Make `payload` - string, concatenated with `api key`,`path`, `timeout`, and `body`. Where `path` - relative path without query params (example: `/api/gateway/payment-methods`) and
   `body` - for `POST` request - json string from request data, for `GET` request empty string.
 - Make `signature` from `payload` and `secret`, using HMAC Authentication with SHA-256.
 
 ### All request to these methods must contain the following headers:
 
-* `X-API-Key` - your key.
-* `X-Signature` - query's POST data, sorted by keys and signed by your key's "secret" according to the HMAC-SHA256 method.
-* `X-Nonce` - integer value, must be greater then nonce in previous api call.
+* `X-Key` - your key.
+* `X-Sign` - query's POST data, signed by your `secret` according to the HMAC-SHA256 method.
+* `X-Timeout` - integer value, timeout to execute call.
 
 # HTTP API (v1)
 
@@ -131,24 +217,21 @@ We are using standard HTTP statuses in responses.
 ## Methods
 
 ```python
-import requests
 
-response = requests.get(
-                        'https://www.bitexbit.com/api/gateway​/payment-methods',
-                        headers = get_auth_headers({})
-                        )
+get("/api/gateway​/payment-methods")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url: 'https://www.bitexbit.com/​api​/gateway​/payment-methods',
-              headers: getAuthHeaders()
-            }, 
-            function (error, response, body) {
-            // process response    
-});
+get("/api/gateway​/payment-methods")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -212,7 +295,6 @@ ordering  | default | Ordering parameter. `id` - ascending sorting, `-id` - desc
 ## Wallet Create
 
 ```python
-import requests
 
 body =  {
   "ticker": "ETH",
@@ -222,15 +304,11 @@ body =  {
   "convert_percent": 2
 }
 
-response = requests.post(
-                        'https://www.bitexbit.com/​api​/gateway​/wallet​/create',
-                        data = body, 
-                        headers = get_auth_headers(body)
-                        )
+post("/​api​/gateway​/wallet​/create", body)
+
 ```
 
 ```javascript
-const request = require('request');
 
 const body =  {
   "ticker": "ETH",
@@ -240,14 +318,14 @@ const body =  {
   "convert_percent": 2
 }
 
-request.post({
-              url:'https://www.bitexbit.com/​api​/gateway​/wallet​/create',
-              form:body,
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
-});
+post("/​api​/gateway​/wallet​/create", body)
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -293,21 +371,21 @@ convert_percent | 5       | `false`  | Order price relative to market. If market
 ## Wallets List
 
 ```python
-import requests
 
-response = requests.get('https://www.bitexbit.com/​api​/gateway​/wallets',headers = get_auth_headers({}))
+get("/​api​/gateway​/wallets")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url: 'https://www.bitexbit.com/​api​/gateway​/wallets',
-              headers: getAuthHeaders()
-            }, 
-            function (error, response, body) {
-            // process response    
-});
+get("/​api​/gateway​/wallets")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -368,21 +446,22 @@ ordering  |default  | Ordering parameter. `id` - ascending sorting, `-id` - desc
 ## Wallet History
 
 ```python
-import requests
 
-response = requests.get('https://www.bitexbit.com/​api​/gateway​/wallet​/history', headers = get_auth_headers(body))
+get("https://www.bitexbit.com/​api​/gateway​/wallet​/history")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url:'https://www.bitexbit.com/​api​/gateway​/wallet​/history',
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
-});
+get("/​api​/gateway​/wallet​/history")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
+
 ```
 
 > Sample output
@@ -446,8 +525,8 @@ limit           | Limiting results.
 # Fiat Invoice
 
 ## Create invoice
+
 ```python
-import requests
 
 body =  {
   "ticker": "USDT",
@@ -462,15 +541,11 @@ body =  {
   "client_ip": "192.168.0.1"
 }
 
-response = requests.post(
-                        'https://www.bitexbit.com/​api​/gateway​/invoice/create',
-                        data = body, 
-                        headers = get_auth_headers(body)
-                        )
+post("/​api​/gateway​/invoice/create", body)
+
 ```
 
 ```javascript
-const request = require('request');
 
 const body =  {
   "ticker": "USDT",
@@ -485,14 +560,14 @@ const body =  {
   "client_ip": "192.168.0.1"
 }
 
-request.post({
-              url:'https://www.bitexbit.com/​api​/gateway​/invoice/create',
-              form:body,
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
-});
+post("/​api​/gateway​/invoice/create", body)
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -544,21 +619,22 @@ convert_percent | 5       | `false`  | Order price relative to market. If market
 ## Invoices List
 
 ```python
-import requests
 
-response = requests.get('https://www.bitexbit.com/​api​/gateway​/invoices',headers = get_auth_headers({}))
+get("/​api​/gateway​/invoices")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url: 'https://www.bitexbit.com/​api​/gateway​/invoices',
-              headers: getAuthHeaders()
-            }, 
-            function (error, response, body) {
-            // process response    
-});
+get("/​api​/gateway​/invoices")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
+
 ```
 
 > Sample output
@@ -608,21 +684,21 @@ ordering  |default  | Ordering parameter. `id` - ascending sorting, `-id` - desc
 ## Invoices History
 
 ```python
-import requests
 
-response = requests.get('https://www.bitexbit.com/​api​/gateway​/invoice/history', headers = get_auth_headers(body))
+get("/​api​/gateway​/invoice/history")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url:'https://www.bitexbit.com/​api​/gateway​/invoice/history',
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
-});
+get("/​api​/gateway​/invoice/history")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -690,7 +766,6 @@ limit           | Limiting results.
 ## Withdraw Create
 
 ```python
-import requests
 
 body =  {
   "ticker": "USDT",
@@ -707,15 +782,12 @@ body =  {
   "auto_buy_percent": 10
 }
 
-response = requests.post(
-                        'https://www.bitexbit.com/​api​/gateway​/withdraw/create',
-                        data = body, 
-                        headers = get_auth_headers(body)
-                        )
+post("/​api​/gateway​/withdraw/create", body)
+
+
 ```
 
 ```javascript
-const request = require('request');
 
 const body =  {
   "ticker": "USDT",
@@ -732,14 +804,15 @@ const body =  {
   "auto_buy_percent": 10
 }
 
-request.post({
-              url:'https://www.bitexbit.com/​api​/gateway​/withdraw/create',
-              form:body,
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
+
+post("/​api​/gateway​/withdraw/create", body)
+.then(resp => {
+  //process response
+})
+.catch(error => {
+  // handle error
 });
+
 ```
 
 > Sample output
@@ -803,24 +876,21 @@ auto_buy_percent | 5      | `false`  | Order price relative to market. If market
 
 
 ```python
-import requests
 
-response = requests.post(
-                        'https://www.bitexbit.com/​api​/gateway​/withdraw/history',
-                        headers = get_auth_headers(body)
-                        )
+get("/​api​/gateway​/withdraw/history")
+
 ```
 
 ```javascript
-const request = require('request');
 
-request.get({
-              url:'https://www.bitexbit.com/​api​/gateway​/withdraw/create',
-              headers:getAuthHeaders(body)
-              }, 
-              function (error, response, body) {
-    // process response    
-});
+get("/​api​/gateway​/withdraw/history")
+  .then(resp => {
+    //process response
+  })
+  .catch(error => {
+    // handle error
+  });
+
 ```
 
 > Sample output
@@ -912,12 +982,6 @@ Code   |  Status    |Description
 30     |  DONE      | Done
 40     |  REFUSED   | Refused by operator
 50     |  CANCELLED | Cancelled by user
-
-
-
-
-
-
 
 
 # AML
